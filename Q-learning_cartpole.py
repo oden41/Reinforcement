@@ -101,19 +101,17 @@ def main():
                 if islearned == 1:  # 学習終わってたら最終のx座標を格納
                     final_x[episode, 0] = observation[0]
                 break
-        if episode % 20 == 0:
-            env = wrappers.Monitor(env, './movie/cartpole-episode-' + str(episode))
 
         if (total_reward_vec.mean() >= goal_average_reward):  # 直近の100エピソードが規定報酬以上であれば成功
             print('Episode %d train agent successfuly!' % episode)
             islearned = 1
-            # np.savetxt('learned_Q_table.csv',q_table, delimiter=",") #Qtableの保存する場合
+            np.savetxt('./learned_Q_table.csv',q_table, delimiter=",") #Qtableの保存する場合
             if isrender == 0:
-                env = wrappers.Monitor(env, './movie/cartpole-episode-' + episode)
+                env = wrappers.Monitor(env, './movie/cartpole-episode-' + str(episode),force=True)
                 isrender = 1
-
-    if islearned:
-        np.savetxt('final_x.csv', final_x, delimiter=",")
+        if islearned:
+            np.savetxt('./final_x.csv', final_x, delimiter=",")
+            return
 
 if __name__ == '__main__':
     main()
