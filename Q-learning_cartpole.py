@@ -36,8 +36,10 @@ def update_Qtable(q_table, state, action, reward, next_state):
 
     return q_table
 
+
 def main():
     env = gym.make('CartPole-v0')
+    env = wrappers.Monitor(env, './movie/cartpole-episode-1',force=True)
     #成功時の最大ステップ数
     max_number_of_steps = 200
     #成功基準の対象とする直近エピソード数
@@ -107,10 +109,10 @@ def main():
             islearned = 1
             np.savetxt('./learned_Q_table.csv',q_table, delimiter=",") #Qtableの保存する場合
             if isrender == 0:
-                env = wrappers.Monitor(env, './movie/cartpole-episode-' + str(episode),force=True)
                 isrender = 1
         if islearned:
             np.savetxt('./final_x.csv', final_x, delimiter=",")
+            env.close()
             return
 
 if __name__ == '__main__':
