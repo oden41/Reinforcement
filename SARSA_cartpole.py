@@ -88,9 +88,7 @@ def main():
             next_action = get_action(next_state, episode, q_table)
             q_table = update_Qtable(q_table, state, action, reward, next_state, next_action)
 
-            #  次の行動a_{t+1}を求める
-            action = get_action(next_state, episode, q_table)  # a_{t+1}
-
+            action = next_action
             state = next_state
 
             # 終了時の処理
