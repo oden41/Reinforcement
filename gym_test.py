@@ -1,17 +1,33 @@
 import gym
 from gympackage.environment import Environment
+from gympackage.agent import Agent
 
-env = gym.make('CartPole-v1')
-print(env)
-print(env.action_space)
-print(env.observation_space)
-print(env.reward_range)
-print(env.spec.max_episode_steps)#1エピソードの最大ステップ
-print(env.spec.timestep_limit)#タイムステップの最大
-print(env.spec.trials) #終了条件対象のエピソード数
-print(env.spec.reward_threshold)
-obs = env.reset()
-e = Environment()
-e.initialize()
-obs = e.next_step(1)
-print(obs)
+env = Environment('MountainCar-v0')
+agent = Agent(env.num_action_space)
+max_episode = 1000
+env.initialize()
+isdebug = True
+
+for episode in range(max_episode):
+    state = env.reset()
+    for time in range(env.max_steps_episode):
+        action = agent.get_action(state)
+        obs = env.next_step(action)
+        # 目標に達しない場合は報酬減
+        if obs.done and time < env.reward_threshold:
+            obs.reward = obs.reward - 200
+
+        next_action = agent.get_action(obs.state)
+        agent.update(state, action, obs.state, next_action)
+
+        state = obs.state
+        action = next_action
+
+        if obs.done:
+            print('%d Episode finished after %f time steps / mean %f' % (episode, time + 1, env.get_reward_ave()))
+            env.end()
+            break
+
+        if env.is_clear():
+            print('Episode %d train agent successfuly!' % episode)
+            exit()
