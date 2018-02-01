@@ -14,19 +14,20 @@ class Environment:
         self.trials = env.spec.trials
         self.reward_threshold = env.spec.reward_threshold
 
-        self.__reward_vec = np.zeros(self.trials)
+        self.__reward_vec = np.array([-10000] * self.trials)
         self.sum_reward = 0
 
-        self.num_action_space = env.action_space.n
+        self.num_action_space = env.action_space.shape[0]
         self.num_state_space = env.observation_space.shape[0]
 
     def initialize(self):
-        """初期化　状態を返す"""
-        self.__reward_vec = np.zeros(self.trials)
+        """環境初期化　状態を返す"""
+        self.__reward_vec = np.array([-10000] * self.trials)
         self.sum_reward = 0
         return self.env.reset()
 
     def reset(self):
+        """エピソード初期化　状態を返す"""
         self.sum_reward = 0
         return self.env.reset()
 
