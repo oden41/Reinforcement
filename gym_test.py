@@ -1,6 +1,6 @@
 import gym
-from gympackage.environment import Environment
-from gympackage.agent import Agent
+from gympackage.environment.default_environment import Environment
+from gympackage.agent.default_agent import Agent
 
 env = Environment('MountainCar-v0')
 agent = Agent(env.num_action_space)
