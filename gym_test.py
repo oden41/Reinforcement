@@ -1,9 +1,9 @@
 import gym
-from gympackage.environment.default_environment import Environment
+from gympackage.environment.cartpole_environment import CartPoleV0
 from gympackage.agent.default_agent import Agent
 
-env = Environment('MountainCar-v0')
-agent = Agent(env.num_action_space)
+env = CartPoleV0()
+agent = Agent()
 max_episode = 1000
 env.initialize()
 isdebug = True
