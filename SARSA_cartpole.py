@@ -3,8 +3,10 @@ from gym import wrappers
 import numpy as np
 import time
 
+
 def bins(clip_min, clip_max, num):
     return np.linspace(clip_min, clip_max, num + 1)[1:-1]
+
 
 def digitize_state(observation, num_d):
     cart_pos, cart_v, pole_angle, pole_v = observation
@@ -14,7 +16,7 @@ def digitize_state(observation, num_d):
         np.digitize(pole_angle, bins=bins(-0.5, 0.5, num_d)),
         np.digitize(pole_v, bins=bins(-2.0, 2.0, num_d))
     ]
-    return sum([x * (num_d**i) for i, x in enumerate(digitized)])
+    return sum([x * (num_d ** i) for i, x in enumerate(digitized)])
 
 
 def get_action(next_state, episode, q_table):
@@ -30,24 +32,26 @@ def get_action(next_state, episode, q_table):
 def update_Qtable(q_table, state, action, reward, next_state, next_action):
     gamma = 0.99
     alpha = 0.5
-    q_table[state, action] = (1 - alpha) * q_table[state, action] + alpha * (reward + gamma * q_table[next_state, next_action])
+    q_table[state, action] = (1 - alpha) * q_table[state, action] + alpha * (
+    reward + gamma * q_table[next_state, next_action])
     return q_table
 
 
 def main():
-    env = gym.make('CartPole-v0')
-    env = wrappers.Monitor(env, './SARSA/movie/cartpole-episode-1',force=True)
-    #成功時の最大ステップ数
+    env = gym.make('-v0')
+    env = wrappers.Monitor(env, './SARSA/movie/cartpole-episode-1', force=True,
+                           video_callable=(lambda ep: ep % 100 == 0))
+    # 成功時の最大ステップ数
     max_number_of_steps = 200
-    #成功基準の対象とする直近エピソード数
+    # 成功基準の対象とする直近エピソード数
     num_consecutive_iterations = 100
-    #最大エピソード数
+    # 最大エピソード数
     num_episodes = 2000
-    #目標とする平均報酬
+    # 目標とする平均報酬
     goal_average_reward = 195
-    #Q値テーブルを作成する際の離散化の個数
+    # Q値テーブルを作成する際の離散化の個数
     num_dizitized = 6
-    #Q値テーブル
+    # Q値テーブル
     q_table = np.random.uniform(
         low=-1, high=1, size=(num_dizitized ** 4, env.action_space.n))
 
@@ -103,13 +107,14 @@ def main():
         if (total_reward_vec.mean() >= goal_average_reward):  # 直近の100エピソードが規定報酬以上であれば成功
             print('Episode %d train agent successfuly!' % episode)
             islearned = 1
-            np.savetxt('./SARSA/learned_Q_table.csv',q_table, delimiter=",") #Qtableの保存する場合
+            np.savetxt('./SARSA/learned_Q_table.csv', q_table, delimiter=",")  # Qtableの保存する場合
             if isrender == 0:
                 isrender = 1
-        if islearned:
-            np.savetxt('./SARSA/final_x.csv', final_x, delimiter=",")
-            env.close()
-            return
+        # if islearned:
+        #     np.savetxt('./SARSA/final_x.csv', final_x, delimiter=",")
+        #     env.close()
+        #     return
+
 
 if __name__ == '__main__':
     main()
