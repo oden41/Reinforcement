@@ -1,5 +1,6 @@
 import gym
 from gym import wrappers
+from gym.spaces import Discrete
 import numpy as np
 
 
@@ -17,7 +18,10 @@ class Environment:
         self.__reward_vec = np.array([-10000] * self.trials)
         self.sum_reward = 0
 
-        self.num_action_space = env.action_space.shape[0]
+        self.action_space = env.action_space
+        self.state_space = env.observation_space
+        self.is_action_space_discrete = isinstance(self.action_space, Discrete)
+        self.is_state_space_discrete = isinstance(self.state_space, Discrete)
         self.num_state_space = env.observation_space.shape[0]
 
     def initialize(self):
