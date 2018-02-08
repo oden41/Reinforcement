@@ -1,9 +1,9 @@
 import gym
 from gympackage.environment.cartpole_environment import CartPoleV0
-from gympackage.agent.default_agent import Agent
+from gympackage.agent.sarsa_agent import SARSA_Agent
 
 env = CartPoleV0()
-agent = Agent()
+agent = SARSA_Agent(env.action_space, 6)
 max_episode = 1000
 env.initialize()
 isdebug = True
@@ -11,13 +11,13 @@ isdebug = True
 for episode in range(max_episode):
     state = env.reset()
     for time in range(env.max_steps_episode):
-        action = agent.get_action(state)
+        action = agent.get_action(episode, state)
         obs = env.next_step(action)
         # 目標に達しない場合は報酬減
         if obs.done and time < env.reward_threshold:
             obs.reward = obs.reward - 200
 
-        next_action = agent.get_action(obs.state)
+        next_action = agent.get_action(episode, obs.state)
         agent.update(state, action, obs.state, next_action)
 
         state = obs.state
