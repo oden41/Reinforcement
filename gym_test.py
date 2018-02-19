@@ -1,9 +1,10 @@
 import gym
 from gympackage.environment.cartpole_environment import CartPoleV0
-from gympackage.agent.sarsa_agent import SARSA_Agent
+from gympackage.agent.nes_agent import NN_NES_Agent
 
 env = CartPoleV0()
-agent = SARSA_Agent(env.action_space, 6)
+agent = NN_NES_Agent(env.is_action_space_discrete, state_size=env.num_state_space, action_size=env.num_action_space)
+agent.get_params()
 max_episode = 1000
 env.initialize()
 isdebug = True

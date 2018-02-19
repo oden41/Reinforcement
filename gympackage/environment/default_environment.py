@@ -22,6 +22,7 @@ class Environment:
         self.state_space = env.observation_space
         self.is_action_space_discrete = isinstance(self.action_space, Discrete)
         self.is_state_space_discrete = isinstance(self.state_space, Discrete)
+        self.num_action_space = env.action_space.shape[0]
         self.num_state_space = env.observation_space.shape[0]
 
     def initialize(self):

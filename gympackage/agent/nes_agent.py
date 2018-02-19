@@ -25,14 +25,14 @@ def softmax(x):
 
 
 class NN_NES_Agent:
-    def __init__(self, is_action_discrete, learning_rate=0.01, state_size=4, action_size=2, hidden_size=10):
+    def __init__(self, is_action_discrete, learning_rate=0.01, state_size=4, action_size=2):
         self.isDiscrete = is_action_discrete
         self.num_action_space = action_size
 
         self.model = Sequential()
-        self.model.add(Dense(10, activation='relu', input_dim=state_size))
-        self.model.add(Dense(5, activation='relu'))
-        self.model.add(Dense(10, activation='relu'))
+        self.model.add(Dense(state_size * 2, activation='relu', input_dim=state_size))
+        self.model.add(Dense(state_size // 2, activation='relu'))
+        self.model.add(Dense(state_size * 2, activation='relu'))
         self.model.add(Dense(action_size, activation='linear'))
         self.optimizer = Adam(lr=learning_rate)
         self.model.compile(loss=huber_loss, optimizer=self.optimizer)
@@ -54,3 +54,13 @@ class NN_NES_Agent:
                 action = np.random.choice(range(self.num_action_space))  # ランダムに行動する
 
         return action
+
+    def set_params(self):
+        pass
+
+    def get_params(self):
+        vector = np.array([])
+        for layer in self.model.layers:
+            weights = layer.get_weights()
+            vector = np.hstack((vector, np.hstack((weights[0].flatten(), weights[1]))))
+        return vector
