@@ -1,10 +1,13 @@
 import gym
+import numpy as np
 from gympackage.environment.cartpole_environment import CartPoleV0
 from gympackage.agent.nes_agent import NN_NES_Agent
 
 env = CartPoleV0()
 agent = NN_NES_Agent(env.is_action_space_discrete, state_size=env.num_state_space, action_size=env.num_action_space)
 agent.get_params()
+weights = np.random.rand(agent.dim)
+agent.set_params(weights)
 max_episode = 1000
 env.initialize()
 isdebug = True

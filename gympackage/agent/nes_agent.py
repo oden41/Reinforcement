@@ -37,6 +37,12 @@ class NN_NES_Agent:
         self.optimizer = Adam(lr=learning_rate)
         self.model.compile(loss=huber_loss, optimizer=self.optimizer)
 
+        weights = self.model.get_weights()
+        vector = np.array([])
+        for w_list in weights:
+            vector = np.hstack((vector, w_list.flatten()))
+        self.dim = len(vector)
+
     def get_action(self, state, episode, network):
         # 徐々に最適行動のみをとる、ε-greedy法
         epsilon = 0.001 + 0.9 / (1.0 + episode)
@@ -55,12 +61,20 @@ class NN_NES_Agent:
 
         return action
 
-    def set_params(self):
-        pass
+    def set_params(self, weights):
+        # modelに合うようにreshapeする
+        vector = []
+        for layer in self.model.get_weights():
+            shape = layer.shape
+            count = shape[0] * (shape[1] if len(shape) != 1 else 1)
+            vector.append(np.reshape(weights[:count], shape))
+            weights = weights[count:]
+
+        self.model.set_weights(np.array(vector))
 
     def get_params(self):
+        weights = self.model.get_weights()
         vector = np.array([])
-        for layer in self.model.layers:
-            weights = layer.get_weights()
-            vector = np.hstack((vector, np.hstack((weights[0].flatten(), weights[1]))))
+        for w_list in weights:
+            vector = np.hstack((vector, w_list.flatten()))
         return vector
